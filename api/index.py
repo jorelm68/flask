@@ -2,6 +2,10 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+@app.route('/', methods=['GET'])
+def index():
+    return "Hello, World!"
+
 @app.route('/api/run_ml', methods=['POST'])
 def run_ml():
     data = request.json
