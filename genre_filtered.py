@@ -15,7 +15,7 @@ def read_in_data():
     included_variables = ["Popularity", "Danceability","Energy","Loudness","Speechiness","Acousticness","Instrumentalness","Liveness","Tempo","Valence", "Album Release Date"]
     indy_included = included_variables + ["Index"]
     
-    df = pd.read_csv("api/songs_data.csv", sep=',', converters={'Artist Genres': lambda x: x.split(", ")}, keep_default_na=False)
+    df = pd.read_csv("songs_data.csv", sep=',', converters={'Artist Genres': lambda x: x.split(", ")}, keep_default_na=False)
     
     #extract simpler genres
     genres = ['pop', 'rock', 'hip hop', "house", "disco", "soul", "r&b"]
@@ -29,7 +29,7 @@ def read_in_data():
                 break
     
     df["Genre"] = song_genres
-    df_all = pd.read_csv("api/songs_data.csv")
+    df_all = pd.read_csv("songs_data.csv")
     df_all["Genre"] = song_genres
     df_all["Index"] = df_all.index
 
@@ -163,3 +163,60 @@ def run_ml_back(query_index, variable, direction):
     g_data = df_all[df_all['Genre'] == genre]
 
     return move_along(g_data, query, variable, int(direction))
+
+# In[ ]:
+import networkx as nx
+from sklearn.neighbors import NearestNeighbors
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# In[ ]:
+def graph_out(index):
+    df_all = read_in_data()
+    
+    query = df_all.iloc[int(index)]
+
+    genre = query["Genre"]
+
+    g_data = df_all[df_all['Genre'] == genre]
+
+    return knn_graph(g_data, index)
+
+def knn_graph(data, index):
+    indy_data = pd.DataFrame(data, columns = indy_included)
+    #clean data
+    normed = clean_and_norm(data)
+
+    #grab normed data with only included variables
+    train_data = pd.DataFrame(normed, columns = included_variables)
+    
+    knn = NearestNeighbors(metric='euclidean', algorithm='auto', n_neighbors=5)
+    knn.fit(train_data)
+
+    distances, indices = knn.kneighbors(train_data, n_neighbors=3)
+
+    # graphing children hehe
+    G = nx.Graph()
+    for i, neighbors in enumerate(indices):
+        for neighbor in neighbors:
+            G.add_edge(i, neighbor, weight=distances[i][np.where(neighbors == neighbor)[0][0]])
+
+    
+    start = index
+    end = 2
+
+    # Find the shortest path using Dijkstra's algorithm
+    try:
+        path = nx.shortest_path(G, source=start, target=end, weight='weight')
+        print("Shortest path from {} to {} is: {}".format(start, end, path))
+        print("Path coordinates:", [indy_data["Index"].iloc[i] for i in path])
+        path_to_return = []
+        for i, ind in enumerate(path):
+            path_to_return.append(data[int(indy_data["Index"].iloc[ind])])
+            print(int(indy_data["Index"].iloc[ind]))
+            print(data["Track Name"].iloc[ind], "by", data["Artist Name(s)"].iloc[ind])
+        
+        return path_to_return
+        # visualize_tree(train_data, G, path, start)
+    except nx.NetworkXNoPath:
+        print("No path found between {} and {}".format(start, end))
