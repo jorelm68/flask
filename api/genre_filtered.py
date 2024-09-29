@@ -163,3 +163,7 @@ def run_ml_back(query_index, variable, direction):
     g_data = df_all[df_all['Genre'] == genre]
 
     return move_along(g_data, query, variable, int(direction))
+
+# In[ ]:
+
+def path_find(start, end):
