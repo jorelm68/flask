@@ -132,13 +132,12 @@ def move_along(data, query_point, variable, direction):
     query_point = current song
     variable = what are we changing? Acousticness? Loudness?
     direction = up/down (1 = up, 0 = down)'''
-    print(query_point[variable])
-    print(query_point[variable].dtype)
-    filtered_data = data[data[variable].iloc[:,] > query_point[variable]]
+    step = 0.001
+    filtered_data = data[data[variable].iloc[:,] > (query_point[variable] + step)]
     if direction == 0:    
-        filtered_data = data[data[variable].iloc[:,] < query_point[variable]]
+        filtered_data = data[data[variable].iloc[:,] < (query_point[variable] - step)]
     
-    print(filtered_data.head())
+    #print(filtered_data.head())
 
     # Ensure there is at least one point left after filtering
     if len(filtered_data) == 0:
