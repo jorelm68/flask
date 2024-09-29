@@ -9,7 +9,6 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 import joblib
 
-
 # In[3]:
 def read_in_data():
     included_variables = ["Popularity", "Danceability","Energy","Loudness","Speechiness","Acousticness","Instrumentalness","Liveness","Tempo","Valence", "Album Release Date"]
@@ -222,6 +221,7 @@ def knn_graph(data, start, end):
         # visualize_tree(train_data, G, path, start)
     except nx.NetworkXNoPath:
         print("No path found between {} and {}".format(start, end))
+        return 0
 
 def closest_dir(data, start, end):
     G, indy_data = graph_start(data)
