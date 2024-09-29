@@ -108,17 +108,17 @@ def index_to_row():
         "album": query["Album Name"],
         "image": query["Album Image URL"],
         "preview": query["Track Preview URL"],
-        "Popularity": query["Popularity"],
-        "Danceability": query["Danceability"],
-        "Energy": query["Energy"],
-        "Loudness": query["Loudness"],
-        "Speechiness": query["Speechiness"],
-        "Acousticness": query["Acousticness"],
-        "Instrumentalness": query["Instrumentalness"],
-        "Liveness": query["Liveness"],
-        "Tempo": query["Tempo"],
-        "Valence": query["Valence"],
-        "AlbumReleaseDate": query["Album Release Date"]
+        "popularity": query["Popularity"],
+        "danceability": query["Danceability"],
+        "energy": query["Energy"],
+        "loudness": query["Loudness"],
+        "speechiness": query["Speechiness"],
+        "acousticness": query["Acousticness"],
+        "instrumentalness": query["Instrumentalness"],
+        "liveness": query["Liveness"],
+        "tempo": query["Tempo"],
+        "valence": query["Valence"],
+        "albumReleaseDate": query["Album Release Date"]
     }
     
     return jsonify(res)
