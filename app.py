@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from genre_filtered import run_ml_back
 from genre_filtered import graph_out
+from genre_filtered import hint
 
 import pandas as pd
 import numpy as np
@@ -84,6 +85,23 @@ def index_to_uri():
     uri = query["Track URI"][14:]
     res = {
         "track_id": uri
+    }
+    return jsonify(res)
+
+
+@app.route('/hint', methods=['POST'])
+def hint_route():
+    data = request.json
+    start = data.get('start')
+    end = data.get('end')
+
+    var, dir = hint(start, end)
+
+    # Your ML logic here
+    # For now, we'll just return the input data
+    res = {
+        "variable": var,
+        "direction": dir
     }
     return jsonify(res)
 

@@ -116,11 +116,12 @@ def move_knn(data, query, variable, direction):
 
     print("Our output has", direction_str, variable, "than our input:")
     ind = indices[0][1]
+    dist = distances[0][1]
     print(data["Track Name"].iloc[ind + 1], "by", data["Artist Name(s)"].iloc[ind + 1])
     print(ind)
     print()
 
-    return ind
+    return ind, dist
 
 
 # In[12]:
@@ -164,8 +165,8 @@ def run_ml_back(query_index, variable, direction):
     genre = query["Genre"]
 
     g_data = df_all[df_all['Genre'] == genre]
-
-    return move_along(g_data, query, variable, int(direction))
+    ind, dist = move_along(g_data, query, variable, int(direction))
+    return ind
 
 # In[ ]:
 import networkx as nx
@@ -185,7 +186,7 @@ def graph_out(start, end):
 
     return knn_graph(g_data, start, end)
 
-def knn_graph(data, start, end):
+def graph_start(data):
     indy_data = pd.DataFrame(data, columns = indy_included)
     #clean data
     normed = clean_and_norm(data)
@@ -203,7 +204,12 @@ def knn_graph(data, start, end):
     for i, neighbors in enumerate(indices):
         for neighbor in neighbors:
             G.add_edge(i, neighbor, weight=distances[i][np.where(neighbors == neighbor)[0][0]])
+    
+    return G, indy_data
 
+
+def knn_graph(data, start, end):
+    G, indy_data = graph_start(data)
     # Find the shortest path using Dijkstra's algorithm
     try:
         path = nx.shortest_path(G, source=start, target=end, weight='weight')
@@ -216,3 +222,43 @@ def knn_graph(data, start, end):
         # visualize_tree(train_data, G, path, start)
     except nx.NetworkXNoPath:
         print("No path found between {} and {}".format(start, end))
+
+def closest_dir(data, start, end):
+    G, indy_data = graph_start(data)
+    try:
+        path = nx.shortest_path(G, source=start, target=end, weight='weight')
+        return data.iloc[path[0]]
+    except nx.NetworkXNoPath:
+        print("No path found between {} and {}".format(start, end))
+        return [-1, -1]
+    
+
+def hint(start, end):
+    df_all = read_in_data()
+    
+    query = df_all.iloc[int(start)]
+
+    genre = query["Genre"]
+
+    g_data = df_all[df_all['Genre'] == genre]
+
+    min_dist = 100000000000000000000
+    min_var = ""
+    min_dir = 0
+    g_data = df_all[df_all['Genre'] == genre]
+
+    for var in included_variables:
+        next_step = closest_dir(g_data, start, end)
+        if next_step[0] == -1:
+            return "Not found", 0
+        dist = np.abs(df_all[var].iloc[start] - next_step[var])
+        
+        d = 1
+        if df_all[var].iloc[start] > next_step[var]:
+            d = 0
+
+        if dist < min_dist:
+            min_dist = dist
+            min_var = var
+            min_dir = d
+    return min_var, min_dir
