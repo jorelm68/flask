@@ -94,14 +94,13 @@ def index_to_row():
     # return track id and index
     data = request.json
     index = data.get('index')
-
     
+    genres = pd.read_csv("songs_data.csv", sep=',', converters={'Artist Genres': lambda x: x.split(", ")}, keep_default_na=False)
+    genres = genres["Artist Genres"]
     df = pd.read_csv("songs_data.csv", dtype=str)
     df = df.fillna('')
 
     query = df.iloc[index]
-
-    print(query)
 
     res = {
         "index": str(index),
@@ -120,7 +119,8 @@ def index_to_row():
         "liveness": query["Liveness"],
         "tempo": query["Tempo"],
         "valence": query["Valence"],
-        "albumReleaseDate": query["Album Release Date"]
+        "albumReleaseDate": query["Album Release Date"],
+        "genres": str(genres.iloc[index][0])
     }
     
     return jsonify(res)
