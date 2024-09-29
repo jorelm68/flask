@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 import joblib
+import os
 
 app = Flask(__name__)
 
