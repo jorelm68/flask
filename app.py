@@ -54,7 +54,7 @@ def run_graph():
     # Your ML logic here
     # For now, we'll just return the input data
     res = {
-        "shortest_steps": steps
+        "shortest_steps": str(steps)
     }
     return jsonify(res)
 
