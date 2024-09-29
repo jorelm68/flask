@@ -2,14 +2,10 @@
 # coding: utf-8
 
 # In[19]:
-
-
 import pandas as pd
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 import joblib
-
-
 # In[3]:
 def read_in_data():
     included_variables = ["Popularity", "Danceability","Energy","Loudness","Speechiness","Acousticness","Instrumentalness","Liveness","Tempo","Valence", "Album Release Date"]
