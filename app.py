@@ -30,8 +30,8 @@ def run_ml():
 
     df = pd.read_csv("songs_data.csv")
 
-    query = df.iloc[int(index)]
-    uri = query["Track URI"][14:]
+    res_query = df.iloc[int(result)]
+    uri = res_query["Track URI"][14:]
 
     # Your ML logic here
     # For now, we'll just return the input data
