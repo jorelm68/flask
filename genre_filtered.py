@@ -210,11 +210,6 @@ def knn_graph(data, start, end):
     # Find the shortest path using Dijkstra's algorithm
     try:
         path = nx.shortest_path(G, source=start, target=end, weight='weight')
-        print("Shortest path from {} to {} is: {}".format(start, end, path))
-        print("Path coordinates:", [indy_data["Index"].iloc[i] for i in path])
-        for i, ind in enumerate(path):
-            print(data["Track Name"].iloc[ind], "by", data["Artist Name(s)"].iloc[ind])
-        
         return len(path)
         # visualize_tree(train_data, G, path, start)
     except nx.NetworkXNoPath:
