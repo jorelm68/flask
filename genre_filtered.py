@@ -115,8 +115,9 @@ def move_knn(data, query, variable, direction):
     if direction == 0: direction_str = "less"
 
     print("Our output has", direction_str, variable, "than our input:")
-    ind = indices[0][0]
+    ind = indices[0][1]
     print(data["Track Name"].iloc[ind + 1], "by", data["Artist Name(s)"].iloc[ind + 1])
+    print(ind)
     print()
 
     return ind
@@ -134,6 +135,8 @@ def move_along(data, query_point, variable, direction):
     if direction == 0:    
         filtered_data = data[data[variable].iloc[:,] < query_point[variable]]
     
+    print(filtered_data.head())
+
     # Ensure there is at least one point left after filtering
     if len(filtered_data) == 0:
         print("No neighbors found with a higher", variable,"value than the query point.")
@@ -212,8 +215,8 @@ def knn_graph(data, index):
         print("Path coordinates:", [indy_data["Index"].iloc[i] for i in path])
         path_to_return = []
         for i, ind in enumerate(path):
-            path_to_return.append(data[int(indy_data["Index"].iloc[ind])])
             print(int(indy_data["Index"].iloc[ind]))
+            path_to_return.append(data[indy_data["Index"].iloc[ind]])
             print(data["Track Name"].iloc[ind], "by", data["Artist Name(s)"].iloc[ind])
         
         return path_to_return

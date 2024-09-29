@@ -27,15 +27,17 @@ def run_ml():
 
     result = run_ml_back(index, variable, direction)
 
+    df = pd.read_csv("songs_data.csv")
+
+    query = df.iloc[int(index)]
+    uri = query["Track URI"][14:]
     # print(graph_out(index))
 
     # Your ML logic here
     # For now, we'll just return the input data
     res = {
-        "index": index,
-        "variable": variable,
-        "direction": direction,
-        "result": int(result)
+        "result": int(result),
+        "track_id": uri
     }
     return jsonify(res)
 
@@ -50,6 +52,21 @@ def random_track():
     uri = query["Track URI"][14:]
     res = {
         "index": int(rand_index),
+        "track_id": uri
+    }
+    return jsonify(res)
+
+@app.route('/index_to_uri', methods=['POST'])
+def index_to_uri():
+    # return track id and index
+    data = request.json
+    index = data.get('index')
+    
+    df = pd.read_csv("songs_data.csv")
+
+    query = df.iloc[index]
+    uri = query["Track URI"][14:]
+    res = {
         "track_id": uri
     }
     return jsonify(res)
