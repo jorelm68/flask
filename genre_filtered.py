@@ -174,18 +174,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # In[ ]:
-def graph_out(index):
+def graph_out(start, end):
     df_all = read_in_data()
     
-    query = df_all.iloc[int(index)]
+    query = df_all.iloc[int(start)]
 
     genre = query["Genre"]
 
     g_data = df_all[df_all['Genre'] == genre]
 
-    return knn_graph(g_data, index)
+    return knn_graph(g_data, start, end)
 
-def knn_graph(data, index):
+def knn_graph(data, start, end):
     indy_data = pd.DataFrame(data, columns = indy_included)
     #clean data
     normed = clean_and_norm(data)
@@ -204,22 +204,15 @@ def knn_graph(data, index):
         for neighbor in neighbors:
             G.add_edge(i, neighbor, weight=distances[i][np.where(neighbors == neighbor)[0][0]])
 
-    
-    start = index
-    end = 2
-
     # Find the shortest path using Dijkstra's algorithm
     try:
         path = nx.shortest_path(G, source=start, target=end, weight='weight')
         print("Shortest path from {} to {} is: {}".format(start, end, path))
         print("Path coordinates:", [indy_data["Index"].iloc[i] for i in path])
-        path_to_return = []
         for i, ind in enumerate(path):
-            print(int(indy_data["Index"].iloc[ind]))
-            path_to_return.append(data[indy_data["Index"].iloc[ind]])
             print(data["Track Name"].iloc[ind], "by", data["Artist Name(s)"].iloc[ind])
         
-        return path_to_return
+        return len(path)
         # visualize_tree(train_data, G, path, start)
     except nx.NetworkXNoPath:
         print("No path found between {} and {}".format(start, end))

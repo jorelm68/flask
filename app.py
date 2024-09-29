@@ -31,13 +31,29 @@ def run_ml():
 
     query = df.iloc[int(index)]
     uri = query["Track URI"][14:]
-    # print(graph_out(index))
 
     # Your ML logic here
     # For now, we'll just return the input data
     res = {
         "result": int(result),
         "track_id": uri
+    }
+    return jsonify(res)
+
+@app.route('/shortest_steps', methods=['POST'])
+def run_graph():
+    data = request.json
+    start = data.get('start')
+    end = data.get('end')
+
+    df = pd.read_csv("songs_data.csv")
+
+    steps = graph_out(start, end)
+
+    # Your ML logic here
+    # For now, we'll just return the input data
+    res = {
+        "shortest_steps": steps
     }
     return jsonify(res)
 
