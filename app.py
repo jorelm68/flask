@@ -94,8 +94,10 @@ def index_to_row():
     # return track id and index
     data = request.json
     index = data.get('index')
+
     
     df = pd.read_csv("songs_data.csv", dtype=str)
+    df = df.fillna('')
 
     query = df.iloc[index]
 
