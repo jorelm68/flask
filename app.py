@@ -89,6 +89,41 @@ def index_to_uri():
     return jsonify(res)
 
 
+@app.route('/index_to_row', methods=['POST'])
+def index_to_row():
+    # return track id and index
+    data = request.json
+    index = data.get('index')
+    
+    df = pd.read_csv("songs_data.csv", dtype=str)
+
+    query = df.iloc[index]
+
+    print(query)
+
+    res = {
+        "index": str(index),
+        "name": query["Track Name"],
+        "artist": query["Artist Name(s)"],
+        "album": query["Album Name"],
+        "image": query["Album Image URL"],
+        "preview": query["Track Preview URL"],
+        "Popularity": query["Popularity"],
+        "Danceability": query["Danceability"],
+        "Energy": query["Energy"],
+        "Loudness": query["Loudness"],
+        "Speechiness": query["Speechiness"],
+        "Acousticness": query["Acousticness"],
+        "Instrumentalness": query["Instrumentalness"],
+        "Liveness": query["Liveness"],
+        "Tempo": query["Tempo"],
+        "Valence": query["Valence"],
+        "AlbumReleaseDate": query["Album Release Date"]
+    }
+    
+    return jsonify(res)
+
+
 @app.route('/hint', methods=['POST'])
 def hint_route():
     data = request.json
